@@ -1,6 +1,7 @@
 # AI Safety Incident Dashboard
 
 A React application for tracking, reporting, and managing AI safety incidents.
+Live link: https://ai-safety-dashboardd.netlify.app/
 
 ## Project Overview
 
