@@ -6,28 +6,26 @@ import IncidentForm from './IncidentForm';
 import '../styles/IncidentDashboard.css';
 
 const IncidentDashboard: React.FC = () => {
-  const [incidents, setIncidents] = useState<Incident[]>(mockIncidents);
-  const [severityFilter, setSeverityFilter] = useState<'All' | SeverityLevel>('All');
-  const [sortOrder, setSortOrder] = useState<'newest' | 'oldest'>('newest');
+  const [inc, setInc] = useState<Incident[]>(mockIncidents);
+  const [sevFilter, setSevFilter] = useState<'All' | SeverityLevel>('All');
+  const [sort, setSort] = useState<'newest' | 'oldest'>('newest');
   const [showForm, setShowForm] = useState(false);
 
-  const filteredIncidents = incidents.filter(incident => 
-    severityFilter === 'All' || incident.severity === severityFilter
-  );
+  const filteredInc = inc.filter((i) => sevFilter === 'All' || i.severity === sevFilter);
 
-  const sortedIncidents = [...filteredIncidents].sort((a, b) => {
+  const sortedInc = [...filteredInc].sort((a, b) => {
     const dateA = new Date(a.reported_at).getTime();
     const dateB = new Date(b.reported_at).getTime();
-    return sortOrder === 'newest' ? dateB - dateA : dateA - dateB;
+    return sort === 'newest' ? dateB - dateA : dateA - dateB;
   });
 
-  const handleAddIncident = (newIncident: Omit<Incident, 'id'>) => {
-    const incidentWithId: Incident = {
-      ...newIncident,
-      id: incidents.length > 0 ? Math.max(...incidents.map(i => i.id)) + 1 : 1
+  const handleAddInc = (newInc: Omit<Incident, 'id'>) => {
+    const incWithId: Incident = {
+      ...newInc,
+      id: inc.length > 0 ? Math.max(...inc.map((i) => i.id)) + 1 : 1,
     };
-    
-    setIncidents([...incidents, incidentWithId]);
+
+    setInc([...inc, incWithId]);
     setShowForm(false);
   };
 
@@ -35,7 +33,7 @@ const IncidentDashboard: React.FC = () => {
     <div className="incident-dashboard">
       <header className="dashboard-header">
         <h1>AI Safety Incident Dashboard</h1>
-        <button 
+        <button
           className="toggle-form-btn"
           onClick={() => setShowForm(!showForm)}
         >
@@ -43,17 +41,15 @@ const IncidentDashboard: React.FC = () => {
         </button>
       </header>
 
-      {showForm && (
-        <IncidentForm onSubmit={handleAddIncident} />
-      )}
+      {showForm && <IncidentForm onSubmit={handleAddInc} />}
 
       <div className="dashboard-controls">
         <div className="filter-control">
-          <label htmlFor="severity-filter">Filter by Severity:</label>
+          <label htmlFor="sev-filter">Filter by Severity:</label>
           <select
-            id="severity-filter"
-            value={severityFilter}
-            onChange={(e) => setSeverityFilter(e.target.value as 'All' | SeverityLevel)}
+            id="sev-filter"
+            value={sevFilter}
+            onChange={(e) => setSevFilter(e.target.value as 'All' | SeverityLevel)}
           >
             <option value="All">All Severities</option>
             <option value="Low">Low</option>
@@ -66,8 +62,8 @@ const IncidentDashboard: React.FC = () => {
           <label htmlFor="date-sort">Sort by Date:</label>
           <select
             id="date-sort"
-            value={sortOrder}
-            onChange={(e) => setSortOrder(e.target.value as 'newest' | 'oldest')}
+            value={sort}
+            onChange={(e) => setSort(e.target.value as 'newest' | 'oldest')}
           >
             <option value="newest">Newest First</option>
             <option value="oldest">Oldest First</option>
@@ -76,10 +72,8 @@ const IncidentDashboard: React.FC = () => {
       </div>
 
       <div className="incidents-list">
-        {sortedIncidents.length > 0 ? (
-          sortedIncidents.map(incident => (
-            <IncidentItem key={incident.id} incident={incident} />
-          ))
+        {sortedInc.length > 0 ? (
+          sortedInc.map((i) => <IncidentItem key={i.id} incident={i} />)
         ) : (
           <p className="no-incidents">No incidents found matching the current filters.</p>
         )}
