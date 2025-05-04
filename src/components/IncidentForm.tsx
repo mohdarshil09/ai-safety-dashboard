@@ -2,49 +2,49 @@ import React, { useState } from 'react';
 import { Incident, SeverityLevel } from '../types/Incident';
 import '../styles/IncidentForm.css';
 
-interface IncidentFormProps {
-  onSubmit: (incident: Omit<Incident, 'id'>) => void;
+interface FormProps {
+  onSubmit: (inc: Omit<Incident, 'id'>) => void;
 }
 
-const IncidentForm: React.FC<IncidentFormProps> = ({ onSubmit }) => {
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
-  const [severity, setSeverity] = useState<SeverityLevel>('Medium');
-  const [errors, setErrors] = useState<{ [key: string]: string }>({});
+const IncidentForm: React.FC<FormProps> = ({ onSubmit }) => {
+  const [ttl, setTtl] = useState('');
+  const [desc, setDesc] = useState('');
+  const [sev, setSev] = useState<SeverityLevel>('Medium');
+  const [err, setErr] = useState<{ [key: string]: string }>({});
 
   const validate = () => {
-    const newErrors: { [key: string]: string } = {};
-    
-    if (!title.trim()) {
-      newErrors.title = 'Title is required';
+    const newErr: { [key: string]: string } = {};
+
+    if (!ttl.trim()) {
+      newErr.ttl = 'Title is required';
     }
-    
-    if (!description.trim()) {
-      newErrors.description = 'Description is required';
+
+    if (!desc.trim()) {
+      newErr.desc = 'Description is required';
     }
-    
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+
+    setErr(newErr);
+    return Object.keys(newErr).length === 0;
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (validate()) {
-      const newIncident: Omit<Incident, 'id'> = {
-        title,
-        description,
-        severity,
-        reported_at: new Date().toISOString()
+      const newInc: Omit<Incident, 'id'> = {
+        title: ttl,
+        description: desc,
+        severity: sev,
+        reported_at: new Date().toISOString(),
       };
-      
-      onSubmit(newIncident);
-      
+
+      onSubmit(newInc);
+
       // Reset form
-      setTitle('');
-      setDescription('');
-      setSeverity('Medium');
-      setErrors({});
+      setTtl('');
+      setDesc('');
+      setSev('Medium');
+      setErr({});
     }
   };
 
@@ -53,69 +53,69 @@ const IncidentForm: React.FC<IncidentFormProps> = ({ onSubmit }) => {
       <h2>Report New Incident</h2>
       <form onSubmit={handleSubmit} className="incident-form">
         <div className="form-group">
-          <label htmlFor="title">Title:</label>
+          <label htmlFor="ttl">Title:</label>
           <input
             type="text"
-            id="title"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            className={errors.title ? 'error' : ''}
+            id="ttl"
+            value={ttl}
+            onChange={(e) => setTtl(e.target.value)}
+            className={err.ttl ? 'error' : ''}
           />
-          {errors.title && <span className="error-message">{errors.title}</span>}
+          {err.ttl && <span className="error-message">{err.ttl}</span>}
         </div>
-        
+
         <div className="form-group">
-          <label htmlFor="description">Description:</label>
+          <label htmlFor="desc">Description:</label>
           <textarea
-            id="description"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
+            id="desc"
+            value={desc}
+            onChange={(e) => setDesc(e.target.value)}
             rows={4}
-            className={errors.description ? 'error' : ''}
+            className={err.desc ? 'error' : ''}
           />
-          {errors.description && <span className="error-message">{errors.description}</span>}
+          {err.desc && <span className="error-message">{err.desc}</span>}
         </div>
-        
+
         <div className="form-group">
           <label>Severity:</label>
           <div className="radio-group">
             <label className="radio-label">
               <input
                 type="radio"
-                name="severity"
+                name="sev"
                 value="Low"
-                checked={severity === 'Low'}
-                onChange={() => setSeverity('Low')}
+                checked={sev === 'Low'}
+                onChange={() => setSev('Low')}
               />
               Low
             </label>
             <label className="radio-label">
               <input
                 type="radio"
-                name="severity"
+                name="sev"
                 value="Medium"
-                checked={severity === 'Medium'}
-                onChange={() => setSeverity('Medium')}
+                checked={sev === 'Medium'}
+                onChange={() => setSev('Medium')}
               />
               Medium
             </label>
             <label className="radio-label">
               <input
                 type="radio"
-                name="severity"
+                name="sev"
                 value="High"
-                checked={severity === 'High'}
-                onChange={() => setSeverity('High')}
+                checked={sev === 'High'}
+                onChange={() => setSev('High')}
               />
               High
             </label>
           </div>
         </div>
-        
+
         <button type="submit" className="submit-btn">Submit Incident</button>
       </form>
     </div>
   );
 };
 
-export default IncidentForm; 
+export default IncidentForm;
